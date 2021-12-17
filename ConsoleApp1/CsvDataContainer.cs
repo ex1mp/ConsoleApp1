@@ -11,5 +11,9 @@ namespace ConsoleApp1
         public int Code { get; set; }
 
         public string Name { get; set; }
+
+        public string Date { get; set; }
+
+        public string Kasa { get; set; }
     }
 }

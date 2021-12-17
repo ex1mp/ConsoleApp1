@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    public class CsvDataContainerNew
+    public class Class
     {
-
-        public string NameList { get; set; }
+        public List<string> names { get; set; }
     }
 }

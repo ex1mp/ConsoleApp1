@@ -1,11 +1,7 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Cyrillic.Convert;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
@@ -19,45 +15,60 @@ namespace ConsoleApp1
         public List<CsvDataContainer> GetDataFromCsv(string filePath)
         {
             using var reader = new StreamReader(filePath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+            {
+                Delimiter = ";"
+            };
+            using var csv = new CsvReader(reader, csvConfig);
+
             var records = csv.GetRecords<CsvDataContainer>();
             return records.ToList();
         }
 
-        public List<CsvDataContainerNew> ProcessData(List<CsvDataContainer> data)
-        {
-            var conversion = new Conversion();
+        public List<Custom> ProcessData(List<CsvDataContainer> data)
+        {var conversion = new Conversion();
+            var dt = new List<Custom>();
+
+            var i =0;
+                foreach (var item in data)
+            {
+                var d =dt.FirstOrDefault(x=>x.Code == item.Code && x.Date.Trim() == item.Date.Trim() && x.Kasa.Trim() == item.Kasa.Trim());
+                if (d != null)
+                {
+                    d.Name.Add(conversion.RussianCyrillicToLatin(item.Name).Trim());
+                    
+                }
+                else
+                {
+                    dt.Add(new Custom()
+                    {
+                        Code = item.Code,
+                        Date = item.Date,   
+                        Kasa = item.Kasa,
+                        Name = new List<string> { conversion.RussianCyrillicToLatin(item.Name).Trim() }
+                    });
+                }
+                Console.WriteLine(i);
+                i++;
+            }
+            
+            
             var groupedData = data.GroupBy(x => x.Code);
             var result = new List<CsvDataContainerNew>();
 
-            foreach (var group in groupedData)
-            {
-                var s = group.ToList();
+            return dt;
 
-                var model = new CsvDataContainerNew() { Code = group.Key, NameList = new List<string>() };
-
-                foreach (var item in group.ToList())
-                {
-                    var translatedText = conversion.RussianCyrillicToLatin(item.Name).Trim().Replace(" ","_");
-                    model.NameList.Add(translatedText);
-                }
-
-                result.Add(model);
-            }
-
-            Console.WriteLine();
-            return result;
         }
 
         public List<CsvDataContainer> ProcessDataNew(List<CsvDataContainer> data)
-        { 
+        {
             var conversion = new Conversion();
 
             foreach (var item in data)
             {
                 item.Name = conversion.RussianCyrillicToLatin(item.Name).Trim().Replace(" ", "_");
             }
-           
+
             return data;
         }
     }
