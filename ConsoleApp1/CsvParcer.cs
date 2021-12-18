@@ -25,27 +25,27 @@ namespace ConsoleApp1
             return records.ToList();
         }
 
-        public List<Custom> ProcessData(List<CsvDataContainer> data)
+        public List<Receipt> ProcessData(List<CsvDataContainer> data)
         {var conversion = new Conversion();
-            var dt = new List<Custom>();
+            var dt = new List<Receipt>();
 
             var i =0;
                 foreach (var item in data)
             {
-                var d =dt.FirstOrDefault(x=>x.Code == item.Code && x.Date.Trim() == item.Date.Trim() && x.Kasa.Trim() == item.Kasa.Trim());
+                var d =dt.FirstOrDefault(x=>x.Code == item.Code && x.Date.Trim() == item.Date.Trim() && x.CashКegister.Trim() == item.Kasa.Trim());
                 if (d != null)
                 {
-                    d.Name.Add(conversion.RussianCyrillicToLatin(item.Name).Trim());
+                    d.Products.Add(conversion.RussianCyrillicToLatin(item.Name).Trim());
                     
                 }
                 else
                 {
-                    dt.Add(new Custom()
+                    dt.Add(new Receipt()
                     {
                         Code = item.Code,
                         Date = item.Date,   
-                        Kasa = item.Kasa,
-                        Name = new List<string> { conversion.RussianCyrillicToLatin(item.Name).Trim() }
+                        CashКegister = item.Kasa,
+                        Products = new List<string> { conversion.RussianCyrillicToLatin(item.Name).Trim() }
                     });
                 }
                 Console.WriteLine(i);

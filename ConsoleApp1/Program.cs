@@ -23,7 +23,7 @@ using (var stream = File.Open("C:/Users/Mikalay_Siarko/Desktop/dat1.csv", FileMo
 using (var writer = new StreamWriter(stream))
 using (var csv = new CsvWriter(writer, config))
 {
-    csv.WriteRecords(records.Select(x=>new Class(){names = x.Name }));
+    csv.WriteRecords(records.Select(x=>new Class(){names = x.Products }));
 }
 
 Console.WriteLine("erewddgdfg");
